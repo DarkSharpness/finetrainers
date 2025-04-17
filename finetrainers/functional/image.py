@@ -19,7 +19,9 @@ def resize_crop_image(image: torch.Tensor, size: Tuple[int, int]) -> torch.Tenso
     target_h, target_w = size
     scale = max(target_h / height, target_w / width)
     new_h, new_w = int(height * scale), int(width * scale)
-    image = F.interpolate(image, size=(new_h, new_w), mode="bilinear", align_corners=False)
+    new_h = max(new_h, target_h)
+    new_w = max(new_w, target_w)
+    image = F.interpolate(image.unsqueeze(0), size=(new_h, new_w), mode="bilinear", align_corners=False)[0]
     return center_crop_image(image, size)
 
 
